@@ -24,6 +24,8 @@
 
 - once you run "npm run dist:mac", you generate a .dmg in /Users/xiaobing/Code/electron/resource_manager /dist/mac-arm64
 - you can just run it, it's awesome
+- In the MacOS build, the preload.cjs located at /Users/xiaobing/Code/electron/resource_manager /dist/mac-arm64/resource-manager.app/Contents/Resources/dist-electron
+- All the bundle code located at /Users/xiaobing/Code/electron/resource_manager /dist/mac-arm64/resource-manager.app/Contents/Resources/app.asar, that's why in the getPreloadPath function, we use '..' when in the production mode for MacOS bundle goes up one directory and load preload.cjs from /dist-electron/
 
 ## Development
 
