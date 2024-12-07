@@ -17,6 +17,8 @@
 13. For realizing the hot load, we need to 'npm i -D cross-env', create isDev util function, setup a vite server in vite.config.ts file
 14. Now, when we run 'npm run dev:react' in one terminal, and 'npm run dev:electron' in another terminal, we can realize the hot load. but this is ridiculous, who wants do that. Let's fix it.
 15. 'npm install -D npm-run-all', use it to run dev:react and dev:electron in parallel
+16. Create preload.cts
+17. Tell Electron-Builder to put preload.cts into the position so that it can be imported at runtime by setting up 'extraResources' in electron-builder.json file
 
 ## what's going on with the setup
 
