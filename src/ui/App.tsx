@@ -1,9 +1,11 @@
+import { useEffect } from 'react'
 import './App.css'
 
 function App() {
-  //@ts-expect-error: "joke"
-  window.electron.getStaticData()
-
+  useEffect(() => {
+    // @ts-expect-error: 'joke'
+    window.electron.subscribeStatistics((stats) => console.log(stats))
+  }, [])
   return (
     <>
       <h1>fight club</h1>

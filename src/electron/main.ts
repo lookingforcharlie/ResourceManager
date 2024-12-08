@@ -1,7 +1,7 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import { getPreloadPath } from './pathResolver.js'
-import { pollResources } from './resourceManager.js'
+import { getStaticData, pollResources } from './resourceManager.js'
 import { isDev } from './utils.js'
 
 app.on('ready', () => {
@@ -11,7 +11,7 @@ app.on('ready', () => {
     webPreferences: {
       // contextIsolation: false, // insecure, allow the access of the whole node.js in the backend
       // nodeIntegration: true, // insecure
-      // prelofad expects a path, it's different in dev and production mode, so created pathResolver.ts to solve it
+      // preload expects a path, it's different in dev and production mode, so created pathResolver.ts to solve it
       // run this script before you open the window and attach everything in the contextBridge in the preload.cts
       preload: getPreloadPath(),
     },
@@ -26,5 +26,12 @@ app.on('ready', () => {
     )
   }
 
-  pollResources()
+  pollResources(mainWindow)
+
+  // send not expecting anyone listen for it
+  // we are using handle here, because UI expecting the backend to respond it needs to handle it
+  // when the event comes in, we will call another callback
+  ipcMain.handle('getStaticData', () => {
+    return getStaticData()
+  })
 })
