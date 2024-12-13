@@ -1,3 +1,4 @@
+import { BrowserWindow } from 'electron'
 import fs from 'fs'
 import os from 'os'
 import osUtils from 'os-utils'
@@ -5,12 +6,21 @@ import osUtils from 'os-utils'
 // we want update the resource every half second
 const POLLING_INTERVAL = 500
 
-export function pollResources() {
+// mainWindow will need to be passed as a reference to whole resource because we are currently not in the scope where it exists
+export function pollResources(mainWindow: BrowserWindow) {
   setInterval(async () => {
     const cpuUsage = await getCpuUsage()
     const ramUsage = await getRamUsage()
     const storageData = getStorageData()
-    console.log({ cpuUsage, ramUsage, storageData: storageData.usage })
+    const statisticsPayload = {
+      cpuUsage,
+      ramUsage,
+      storageData: storageData.usage,
+    }
+
+    // On the event bus called 'statistics', we are sending the data every 5 seconds
+    // If the front wants, it can listen to the event
+    mainWindow.webContents.send('statistics', statisticsPayload)
   }, POLLING_INTERVAL)
 }
 
@@ -20,12 +30,14 @@ export function getStaticData() {
   const cpuSpeed = os.cpus()[0].speed
   const totalMemoryGB = Math.floor(osUtils.totalmem() / 1024)
 
-  return {
+  const staticDataPayload = {
     totalStorage,
     cpuModel,
     cpuSpeed,
     totalMemoryGB,
   }
+
+  return staticDataPayload
 }
 
 // getting cpu usage

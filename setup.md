@@ -17,11 +17,15 @@
 13. For realizing the hot load, we need to 'npm i -D cross-env', create isDev util function, setup a vite server in vite.config.ts file
 14. Now, when we run 'npm run dev:react' in one terminal, and 'npm run dev:electron' in another terminal, we can realize the hot load. but this is ridiculous, who wants do that. Let's fix it.
 15. 'npm install -D npm-run-all', use it to run dev:react and dev:electron in parallel
+16. Create preload.cts
+17. Tell Electron-Builder to put preload.cts into the position so that it can be imported at runtime by setting up 'extraResources' in electron-builder.json file
 
 ## what's going on with the setup
 
 - once you run "npm run dist:mac", you generate a .dmg in /Users/xiaobing/Code/electron/resource_manager /dist/mac-arm64
 - you can just run it, it's awesome
+- In the MacOS build, the preload.cjs located at /Users/xiaobing/Code/electron/resource_manager /dist/mac-arm64/resource-manager.app/Contents/Resources/dist-electron
+- All the bundle code located at /Users/xiaobing/Code/electron/resource_manager /dist/mac-arm64/resource-manager.app/Contents/Resources/app.asar, that's why in the getPreloadPath function, we use '..' when in the production mode for MacOS bundle goes up one directory and load preload.cjs from /dist-electron/
 
 ## Development
 
