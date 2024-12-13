@@ -3,7 +3,6 @@ import './App.css'
 
 function App() {
   useEffect(() => {
-    // @ts-expect-error: 'joke'
     window.electron.subscribeStatistics((stats) => console.log(stats))
   }, [])
   return (

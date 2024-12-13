@@ -1,8 +1,8 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import { getPreloadPath } from './pathResolver.js'
 import { getStaticData, pollResources } from './resourceManager.js'
-import { isDev } from './utils.js'
+import { ipcMainHandle, isDev } from './utils.js'
 
 app.on('ready', () => {
   const mainWindow = new BrowserWindow({
@@ -26,12 +26,20 @@ app.on('ready', () => {
     )
   }
 
+  // Since the function of setInterval, this function is always running even no subscribe of 'statistics' from frontend
+  // TODO: is this a problem, more graceful way to handle this or not?
+  // perhaps it's ok in this case, cos the whole application is about sending resource to the frontend and render them
+  // TODO: Another question, once ipcRender.on is on, any way to make it off?
   pollResources(mainWindow)
 
   // send not expecting anyone listen for it
   // we are using handle here, because UI expecting the backend to respond it needs to handle it
   // when the event comes in, we will call another callback
-  ipcMain.handle('getStaticData', () => {
+  // ipcMain.handle('getStaticData', () => {
+  //   return getStaticData()
+  // })
+
+  ipcMainHandle('getStaticData', () => {
     return getStaticData()
   })
 })
