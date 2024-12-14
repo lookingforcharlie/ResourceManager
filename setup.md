@@ -44,3 +44,6 @@
 - preload script is a preferred way in Electron
 - run preload before windows initialized and append the data to the window object inside our browser window
 - Preload script will have some kind of a wrapper around the IPC bus using IPC renderer
+- Main to Renderer:
+  - Sending: mainWindow.webContents.send(channel, ...args)
+  - Receiving: ipcRenderer.on(channel, listener)

@@ -2,6 +2,7 @@ import { BrowserWindow } from 'electron'
 import fs from 'fs'
 import os from 'os'
 import osUtils from 'os-utils'
+import { ipcWebContentsSend } from './utils.js'
 
 // we want update the resource every half second
 const POLLING_INTERVAL = 500
@@ -21,10 +22,12 @@ export function pollResources(mainWindow: BrowserWindow) {
     // On the event bus called 'statistics', we are sending the data every 5 seconds
     // If the front wants, it can listen to the event
     mainWindow.webContents.send('statistics', statisticsPayload)
+    ipcWebContentsSend('statistics', mainWindow.webContents, statisticsPayload)
+    console.log(statisticsPayload)
   }, POLLING_INTERVAL)
 }
 
-export function getStaticData() {
+export function getStaticData(): StaticData {
   const totalStorage = getStorageData().total
   const cpuModel = os.cpus()[0].model
   const cpuSpeed = os.cpus()[0].speed
@@ -44,7 +47,7 @@ export function getStaticData() {
 // return the cpu percentage with a promise
 // don't want console.log inside a callback, I want it return from the above function
 // this promise approach is more modern and easier for error handling by wrapping it with try catch
-function getCpuUsage() {
+function getCpuUsage(): Promise<number> {
   return new Promise((resolve) => {
     osUtils.cpuUsage((percentage) => {
       resolve(percentage)
@@ -57,7 +60,7 @@ function getCpuUsage() {
 }
 
 // getting ram usage
-function getRamUsage() {
+function getRamUsage(): Promise<number> {
   return new Promise((resolve) => {
     resolve(1 - osUtils.freememPercentage())
   })

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    // tell TS to generate ESM Syntax
     "target": "ES2022",
     "lib": ["ES2023"],
     "module": "ESNext",
