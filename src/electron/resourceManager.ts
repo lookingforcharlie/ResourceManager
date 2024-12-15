@@ -23,7 +23,7 @@ export function pollResources(mainWindow: BrowserWindow) {
     // If the front wants, it can listen to the event
     mainWindow.webContents.send('statistics', statisticsPayload)
     ipcWebContentsSend('statistics', mainWindow.webContents, statisticsPayload)
-    console.log(statisticsPayload)
+    // console.log(statisticsPayload)
   }, POLLING_INTERVAL)
 }
 

@@ -1,7 +1,9 @@
-import { ipcMain, WebContents } from 'electron'
+import { ipcMain, WebContents, WebFrameMain } from 'electron'
+import { pathToFileURL } from 'url'
+import { getUIPath } from './pathResolver.js'
 
 export function isDev(): boolean {
-  console.log('node_env: ', process.env.NODE_ENV)
+  console.log('checking node_env in isDev func: ', process.env.NODE_ENV)
   return process.env.NODE_ENV === 'development'
 }
 
@@ -12,7 +14,13 @@ export function ipcMainHandle<key extends keyof EventPayloadMapping>(
   key: key,
   handler: () => EventPayloadMapping[key]
 ) {
-  ipcMain.handle(key, () => handler())
+  ipcMain.handle(key, (event) => {
+    console.log('senderFrame', event.senderFrame?.url)
+    if (event.senderFrame != null) {
+      validateEventFrame(event.senderFrame)
+    }
+    return handler()
+  })
 }
 
 export function ipcWebContentsSend<Key extends keyof EventPayloadMapping>(
@@ -21,4 +29,17 @@ export function ipcWebContentsSend<Key extends keyof EventPayloadMapping>(
   payload: EventPayloadMapping[Key]
 ) {
   webContents.send(key, payload)
+}
+
+export function validateEventFrame(frame: WebFrameMain) {
+  console.log('validating frame url:', frame.url)
+  // validate the event in Dev mode
+  if (isDev() && new URL(frame.url).host === 'localhost:5123') return
+
+  // validate the event in production mode
+  // turn the url into something look like file://app/ui/index.html
+  // this is not a full proof solution, if you have multiple files in your electron app, this won't work
+  if (frame.url !== pathToFileURL(getUIPath()).toString()) {
+    throw new Error('Malicious event')
+  }
 }

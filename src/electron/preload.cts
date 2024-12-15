@@ -36,7 +36,6 @@ function ipcOn<Key extends keyof EventPayloadMapping>(
   key: Key,
   callback: (payload: EventPayloadMapping[Key]) => void
 ) {
-  ;``
   ipcRenderer.on(key, (_, payload) => callback(payload))
 }
 

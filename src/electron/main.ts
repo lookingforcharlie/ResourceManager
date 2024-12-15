@@ -1,6 +1,5 @@
 import { app, BrowserWindow } from 'electron'
-import path from 'path'
-import { getPreloadPath } from './pathResolver.js'
+import { getPreloadPath, getUIPath } from './pathResolver.js'
 import { getStaticData, pollResources } from './resourceManager.js'
 import { ipcMainHandle, isDev } from './utils.js'
 
@@ -21,9 +20,7 @@ app.on('ready', () => {
     mainWindow.loadURL('http://localhost:5123')
   } else {
     // index.html file from dist-react directory
-    mainWindow.loadFile(
-      path.join(app.getAppPath(), '/dist-react', 'index.html')
-    )
+    mainWindow.loadFile(getUIPath())
   }
 
   // Since the function of setInterval, this function is always running even no subscribe of 'statistics' from frontend
