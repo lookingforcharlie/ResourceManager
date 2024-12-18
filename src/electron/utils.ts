@@ -31,6 +31,7 @@ export function ipcWebContentsSend<Key extends keyof EventPayloadMapping>(
   webContents.send(key, payload)
 }
 
+// what's the use case?
 export function validateEventFrame(frame: WebFrameMain) {
   console.log('validating frame url:', frame.url)
   // validate the event in Dev mode

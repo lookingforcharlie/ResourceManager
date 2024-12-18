@@ -18,7 +18,7 @@ contextBridge.exposeInMainWorld('electron', {
     // ipcRenderer.on('statistics', (_, stats) => {
     //   callback(stats)
     // })
-    ipcOn('statistics', (stats) => callback(stats))
+    return ipcOn('statistics', (stats) => callback(stats))
   },
   // Another way of communication
   // ipcRenderer.invoke('getStaticData') sends a message to the main process and expects a Promise<response>
@@ -36,7 +36,11 @@ function ipcOn<Key extends keyof EventPayloadMapping>(
   key: Key,
   callback: (payload: EventPayloadMapping[Key]) => void
 ) {
-  ipcRenderer.on(key, (_, payload) => callback(payload))
+  const cb = (_: Electron.IpcRendererEvent, payload: any) => callback(payload)
+
+  ipcRenderer.on(key, cb)
+  // using .off to unsubscribe as soon as the key and reference function are the same
+  return () => ipcRenderer.off(key, cb)
 }
 
 function ipcInvoke<Key extends keyof EventPayloadMapping>(
