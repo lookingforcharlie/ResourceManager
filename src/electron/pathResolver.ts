@@ -17,5 +17,9 @@ export function getUIPath() {
   return path.join(app.getAppPath(), '/dist-react', 'index.html')
 }
 
+export function getAssetPath() {
+  return path.join(app.getAppPath(), isDev() ? '.' : '..', 'src/assets')
+}
+
 // Electron-builder will actually bundle all of our TypeScript file inside of this electron folder into a singular file in the end, and because we actually need to load this using the file system, this can't happen
 // so we'll just add another extension and write this in commonjs to avoid this
