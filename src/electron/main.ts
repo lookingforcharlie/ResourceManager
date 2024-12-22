@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron'
 import { getPreloadPath, getUIPath } from './pathResolver.js'
 import { getStaticData, pollResources } from './resourceManager.js'
+import { createTray } from './tray.js'
 import { ipcMainHandle, isDev } from './utils.js'
 
 app.on('ready', () => {
@@ -39,4 +40,39 @@ app.on('ready', () => {
   ipcMainHandle('getStaticData', () => {
     return getStaticData()
   })
+
+  // this is how to handle quit in Windows
+  // app.on('window-all-closed', function () {
+  //   if (process.platform !== 'darwin') app.quit()
+  // })
+
+  createTray(mainWindow)
+  handleCloseEvents(mainWindow)
 })
+
+function handleCloseEvents(mainWindow: BrowserWindow) {
+  // Default, we don't want the app close
+  let willClose = false
+  mainWindow.on('close', (e) => {
+    if (willClose) {
+      return
+    }
+    e.preventDefault()
+    // do everything on Windows and Linux, but not everything on Mac
+    mainWindow.hide()
+    // with this, you won't see the electron icon in the Mac bottom dock
+    if (app.dock) {
+      app.dock.hide()
+    }
+
+    // before quit event
+    app.on('before-quit', () => {
+      willClose = true
+    })
+
+    // click the tray icon, open the window back up
+    mainWindow.on('show', () => {
+      willClose = false
+    })
+  })
+}

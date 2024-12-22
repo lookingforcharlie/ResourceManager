@@ -20,6 +20,7 @@
 16. Create preload.cts
 17. Tell Electron-Builder to put preload.cts into the position so that it can be imported at runtime by setting up 'extraResources' in electron-builder.json file
 18. npm i recharts to show the chart
+19. Setup app icon: electron-builder.json includes the icons folder,
 
 ## what's going on with the setup
 
