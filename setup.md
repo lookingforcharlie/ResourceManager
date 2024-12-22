@@ -19,6 +19,7 @@
 15. 'npm install -D npm-run-all', use it to run dev:react and dev:electron in parallel
 16. Create preload.cts
 17. Tell Electron-Builder to put preload.cts into the position so that it can be imported at runtime by setting up 'extraResources' in electron-builder.json file
+18. npm i recharts to show the chart
 
 ## what's going on with the setup
 
