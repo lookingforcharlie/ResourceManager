@@ -5,7 +5,8 @@ import { getStaticData, pollResources } from './resourceManager.js'
 import { createTray } from './tray.js'
 import { ipcMainHandle, isDev } from './utils.js'
 
-// if you want to disable your menu, you need to do it before app.on('ready')
+// if you want to disable your menu, you need to do it before app.on('ready') and comment out the line of createMenu(mainWindow)
+
 // Menu.setApplicationMenu(null)
 
 app.on('ready', () => {
