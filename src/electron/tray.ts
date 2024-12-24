@@ -19,6 +19,7 @@ export function createTray(mainWindow: BrowserWindow) {
         label: 'show',
         click: () => {
           mainWindow.show()
+          // when the mainWindow pops up, the icon in the dock will show as well
           if (app.dock) {
             app.dock.show()
           }
