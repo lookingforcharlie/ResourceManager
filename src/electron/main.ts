@@ -1,8 +1,12 @@
 import { app, BrowserWindow } from 'electron'
+import { createMenu } from './menu.js'
 import { getPreloadPath, getUIPath } from './pathResolver.js'
 import { getStaticData, pollResources } from './resourceManager.js'
 import { createTray } from './tray.js'
 import { ipcMainHandle, isDev } from './utils.js'
+
+// if you want to disable your menu, you need to do it before app.on('ready')
+// Menu.setApplicationMenu(null)
 
 app.on('ready', () => {
   const mainWindow = new BrowserWindow({
@@ -48,6 +52,7 @@ app.on('ready', () => {
 
   createTray(mainWindow)
   handleCloseEvents(mainWindow)
+  createMenu(mainWindow)
 })
 
 function handleCloseEvents(mainWindow: BrowserWindow) {
