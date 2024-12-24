@@ -15,12 +15,15 @@ type StaticData = {
   totalMemoryGB: number
 }
 
+type View = 'CPU' | 'RAM' | 'STORAGE'
+
 // Creating an adapter from one side to the other and vice versa
 // We only IPC inside the adapters
 // key is the event name
 type EventPayloadMapping = {
   statistics: Statistics
   getStaticData: StaticData
+  changeView: View
 }
 
 // doesn't return anything called side effect function
@@ -34,5 +37,6 @@ interface Window {
     ) => UnsubscribeFunction
     // getStaticData expects a function that returns Promise<value>
     getStaticData: () => Promise<StaticData>
+    subscribeChangeView: (callback: (view: View) => void) => UnsubscribeFunction
   }
 }

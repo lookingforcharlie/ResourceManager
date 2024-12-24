@@ -25,8 +25,10 @@ contextBridge.exposeInMainWorld('electron', {
   // we don't need second parameter here, defining what event we actually want to listen for is completely plenty
   // go back to the main process setup the ipcMain for this
   // getStaticData: () => ipcRenderer.invoke('getStaticData'),
-
   getStaticData: () => ipcInvoke('getStaticData'),
+  subscribeChangeView: (callback) => {
+    return ipcOn('changeView', (stats) => callback(stats))
+  },
 } satisfies Window['electron'])
 
 // All the frontend electron stuff happens inside preload script, and we want to expose as little of electron as possible
