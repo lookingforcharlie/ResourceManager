@@ -29,6 +29,7 @@ contextBridge.exposeInMainWorld('electron', {
   subscribeChangeView: (callback) => {
     return ipcOn('changeView', (stats) => callback(stats))
   },
+  sendFrameAction: (payload) => ipcSend('sendFrameAction', payload),
 } satisfies Window['electron'])
 
 // All the frontend electron stuff happens inside preload script, and we want to expose as little of electron as possible
@@ -49,4 +50,12 @@ function ipcInvoke<Key extends keyof EventPayloadMapping>(
   key: Key
 ): Promise<EventPayloadMapping[Key]> {
   return ipcRenderer.invoke(key)
+}
+
+// send window action, not expecting anything
+function ipcSend<Key extends keyof EventPayloadMapping>(
+  key: Key,
+  payload: EventPayloadMapping[Key]
+) {
+  ipcRenderer.send(key, payload)
 }

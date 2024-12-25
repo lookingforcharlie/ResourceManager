@@ -17,6 +17,8 @@ type StaticData = {
 
 type View = 'CPU' | 'RAM' | 'STORAGE'
 
+type FrameWindowAction = 'CLOSE' | 'MAXIMIZE' | 'MINIMIZE'
+
 // Creating an adapter from one side to the other and vice versa
 // We only IPC inside the adapters
 // key is the event name
@@ -24,6 +26,7 @@ type EventPayloadMapping = {
   statistics: Statistics
   getStaticData: StaticData
   changeView: View
+  sendFrameAction: FrameWindowAction
 }
 
 // doesn't return anything called side effect function
@@ -38,5 +41,6 @@ interface Window {
     // getStaticData expects a function that returns Promise<value>
     getStaticData: () => Promise<StaticData>
     subscribeChangeView: (callback: (view: View) => void) => UnsubscribeFunction
+    sendFrameAction: (Payload: FrameWindowAction) => void
   }
 }

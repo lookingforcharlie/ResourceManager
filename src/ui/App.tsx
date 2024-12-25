@@ -44,13 +44,27 @@ function App() {
     return window.electron.subscribeChangeView((view) => setActiveView(view))
   }, [])
   return (
-    <>
+    <div className='App'>
+      <header>
+        <button
+          id='close'
+          onClick={() => window.electron.sendFrameAction('CLOSE')}
+        />
+        <button
+          id='minimize'
+          onClick={() => window.electron.sendFrameAction('MINIMIZE')}
+        />
+        <button
+          id='maximize'
+          onClick={() => window.electron.sendFrameAction('MAXIMIZE')}
+        />
+      </header>
       <h1>fight club</h1>
       <div style={{ height: 120 }}>
         {/* <BaseChart data={[{ value: 25 }, { value: 30 }, { value: 100 }]} /> */}
         <Chart data={activeUsages} maxDataPoints={10} />
       </div>
-    </>
+    </div>
   )
 }
 

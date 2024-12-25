@@ -3,7 +3,7 @@ import { createMenu } from './menu.js'
 import { getPreloadPath, getUIPath } from './pathResolver.js'
 import { getStaticData, pollResources } from './resourceManager.js'
 import { createTray } from './tray.js'
-import { ipcMainHandle, isDev } from './utils.js'
+import { ipcMainHandle, ipcMainOn, isDev } from './utils.js'
 
 // if you want to disable your menu, you need to do it before app.on('ready') and comment out the line of createMenu(mainWindow)
 
@@ -20,6 +20,8 @@ app.on('ready', () => {
       // run this script before you open the window and attach everything in the contextBridge in the preload.cts
       preload: getPreloadPath(),
     },
+    // disable the whole frame, make native menu gone, window isn't draggable
+    frame: false,
   })
 
   if (isDev()) {
@@ -50,6 +52,20 @@ app.on('ready', () => {
   // app.on('window-all-closed', function () {
   //   if (process.platform !== 'darwin') app.quit()
   // })
+
+  ipcMainOn('sendFrameAction', (payload) => {
+    switch (payload) {
+      case 'CLOSE':
+        mainWindow.close()
+        break
+      case 'MINIMIZE':
+        mainWindow.minimize()
+        break
+      case 'MAXIMIZE':
+        mainWindow.maximize()
+        break
+    }
+  })
 
   createTray(mainWindow)
   handleCloseEvents(mainWindow)
