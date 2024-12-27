@@ -16,7 +16,7 @@ export function createTray(mainWindow: BrowserWindow) {
   tray.setContextMenu(
     Menu.buildFromTemplate([
       {
-        label: 'show',
+        label: 'Show',
         click: () => {
           mainWindow.show()
           // when the mainWindow pops up, the icon in the dock will show as well
