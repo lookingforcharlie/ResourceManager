@@ -5,6 +5,7 @@ import { useStatistics } from './hooks/useStatistics'
 
 function App() {
   const [activeView, setActiveView] = useState<View>('CPU')
+  const staticData = useStaticData()
   const statisticsData = useStatistics(10)
   const cpuUsages = useMemo(
     () =>
@@ -45,27 +46,95 @@ function App() {
   }, [])
   return (
     <div className='App'>
-      <header>
-        <button
-          id='close'
-          onClick={() => window.electron.sendFrameAction('CLOSE')}
-        />
-        <button
-          id='minimize'
-          onClick={() => window.electron.sendFrameAction('MINIMIZE')}
-        />
-        <button
-          id='maximize'
-          onClick={() => window.electron.sendFrameAction('MAXIMIZE')}
-        />
-      </header>
-      <h1>fight club</h1>
-      <div style={{ height: 120 }}>
-        {/* <BaseChart data={[{ value: 25 }, { value: 30 }, { value: 100 }]} /> */}
-        <Chart data={activeUsages} maxDataPoints={10} />
+      <Header />
+      <div className='main'>
+        <div>
+          <SelectOption
+            title='CPU'
+            subTitle={
+              (staticData?.cpuModel ?? '') + ' Speed: ' + staticData?.cpuSpeed
+            }
+            data={cpuUsages}
+            onClick={() => setActiveView('CPU')}
+          />
+          <SelectOption
+            title='RAM'
+            subTitle={(staticData?.totalMemoryGB.toString() ?? '') + ' GB'}
+            data={ramUsages}
+            onClick={() => setActiveView('RAM')}
+          />
+          <SelectOption
+            title='STORAGE'
+            subTitle={(staticData?.totalStorage.toString() ?? '') + ' GB'}
+            data={storageUsages}
+            onClick={() => setActiveView('STORAGE')}
+          />
+        </div>
+        <div className='mainGrid'>
+          {/* <BaseChart data={[{ value: 25 }, { value: 30 }, { value: 100 }]} /> */}
+          <Chart
+            data={activeUsages}
+            maxDataPoints={10}
+            selectedView={activeView}
+          />
+        </div>
       </div>
     </div>
   )
+}
+
+function SelectOption(props: {
+  title: View
+  subTitle: string
+  data: number[]
+  onClick: () => void
+}) {
+  return (
+    <button className='selectOption' onClick={props.onClick}>
+      <div className='selectOptionTitle'>
+        <div>{props.title}</div>
+        <div>{props.subTitle}</div>
+      </div>
+      <div className='selectOptionChart'>
+        <Chart
+          data={props.data}
+          maxDataPoints={10}
+          selectedView={props.title}
+        />
+      </div>
+    </button>
+  )
+}
+
+function Header() {
+  return (
+    <header>
+      <button
+        id='close'
+        onClick={() => window.electron.sendFrameAction('CLOSE')}
+      />
+      <button
+        id='minimize'
+        onClick={() => window.electron.sendFrameAction('MINIMIZE')}
+      />
+      <button
+        id='maximize'
+        onClick={() => window.electron.sendFrameAction('MAXIMIZE')}
+      />
+    </header>
+  )
+}
+
+function useStaticData() {
+  const [staticData, setStaticData] = useState<StaticData | null>(null)
+
+  useEffect(() => {
+    ;(async () => {
+      setStaticData(await window.electron.getStaticData())
+    })()
+  }, [])
+
+  return staticData
 }
 
 export default App
