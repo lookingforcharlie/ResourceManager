@@ -57,3 +57,7 @@
 - connect to vite instance, because we are spitting up the vite server, spitting up the electron app, electron app connect to a vite server to basically allow hot module loading. Now we need to let Playwright connecting to the vite server, so we don't want the app build up every time we run the test
 - setup the webServer in playwright.config.ts
 - when setting up the webServer in playwright.config.ts, use url: 'http://localhost:5123', instead of url: 'http://127.0.0.1:5123', because vite don't recognize 127.0.0.1
+
+## Testing Git
+
+- master content: testing rebase
